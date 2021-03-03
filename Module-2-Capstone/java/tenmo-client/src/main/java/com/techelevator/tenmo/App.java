@@ -1,9 +1,15 @@
 package com.techelevator.tenmo;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.techelevator.tenmo.models.Account;
 import com.techelevator.tenmo.models.AuthenticatedUser;
 import com.techelevator.tenmo.models.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
+import com.techelevator.tenmo.services.TenmoApplicationServices;
 import com.techelevator.view.ConsoleService;
 
 public class App {
@@ -25,6 +31,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     private AuthenticatedUser currentUser;
     private ConsoleService console;
     private AuthenticationService authenticationService;
+    private TenmoApplicationServices apiService;
+    private DecimalFormat formatter = new DecimalFormat("0.00");
 
     public static void main(String[] args) {
     	App app = new App(new ConsoleService(System.in, System.out), new AuthenticationService(API_BASE_URL));
@@ -34,6 +42,7 @@ private static final String API_BASE_URL = "http://localhost:8080/";
     public App(ConsoleService console, AuthenticationService authenticationService) {
 		this.console = console;
 		this.authenticationService = authenticationService;
+		this.apiService = new TenmoApplicationServices();
 	}
 
 	public void run() {
@@ -68,8 +77,8 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void viewCurrentBalance() {
-		// TODO Auto-generated method stub
-		
+		double balance = apiService.getCurrentUsersBalance(currentUser.getToken());
+		System.out.println("Your current balance is: $" + formatter.format(balance));
 	}
 
 	private void viewTransferHistory() {
@@ -83,8 +92,21 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void sendBucks() {
-		// TODO Auto-generated method stub
+		List<Account> accounts = apiService.getAllAccountsToTransfer(currentUser.getToken());
 		
+		for (Account account : accounts) {
+			System.out.println(account.getAccountId() + ": " + account.getUserName());
+		}
+		
+		boolean menuLoop = true;
+		
+		Integer userChoice = console.getUserInputInteger("Choose from an account to send TE Bucks");
+		
+		if (userChoice > 0) {
+			
+		} else {
+			System.out.println("Must send a positive number.");
+		}
 	}
 
 	private void requestBucks() {
