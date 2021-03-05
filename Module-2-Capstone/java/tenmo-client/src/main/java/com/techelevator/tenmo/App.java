@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.techelevator.tenmo.models.Account;
 import com.techelevator.tenmo.models.AuthenticatedUser;
+import com.techelevator.tenmo.models.Transfer;
 import com.techelevator.tenmo.models.UserCredentials;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.AuthenticationServiceException;
@@ -82,8 +83,13 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 	}
 
 	private void viewTransferHistory() {
-		// TODO Auto-generated method stub
+		System.out.println("Transfer history for: " + currentUser.getUser().getUsername());
+		System.out.println();
+		List<Transfer> transfers = apiService.getAllUserTransfers(currentUser.getToken());
 		
+		for (Transfer transfer : transfers) {
+			System.out.println(transfer + "\n");
+		}
 	}
 
 	private void viewPendingRequests() {
@@ -103,7 +109,18 @@ private static final String API_BASE_URL = "http://localhost:8080/";
 		Integer userChoice = console.getUserInputInteger("Choose from an account to send TE Bucks");
 		
 		if (userChoice > 0) {
+			Double amount = Double.parseDouble(console.getUserInput("How much TE Bucks do you want to give this user?"));
+			Transfer newTransfer = new Transfer();
+			newTransfer.setAccountTo(userChoice);
+			newTransfer.setAmount(amount);
 			
+			newTransfer = apiService.sendTransfer(newTransfer, currentUser.getToken());
+			
+			if (newTransfer.getTransferStatusId() == 2) {
+				System.out.println("Transfer Successful!");
+			} else if (newTransfer.getTransferStatusId() == 3) {
+				System.out.println("Something went wrong, try again!");
+			}
 		} else {
 			System.out.println("Must send a positive number.");
 		}

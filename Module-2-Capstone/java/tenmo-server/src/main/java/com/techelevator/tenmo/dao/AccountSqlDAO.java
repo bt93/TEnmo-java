@@ -51,6 +51,16 @@ public class AccountSqlDAO implements AccountDAO {
 		
 		return accounts;
 	}
+	
+	
+	public void transferMoney(Account accountFrom, Account accountTo, double amount) {
+		String sql = "UPDATE accounts "
+				+ "SET balance = ? "
+				+ "WHERE account_id = ?;";
+		
+		jdbcTemplate.update(sql, accountFrom.getBalance() - amount, accountFrom.getAccountId());
+		jdbcTemplate.update(sql, accountTo.getBalance() + amount, accountTo.getAccountId());
+	}
 
 	private Account mapRowToAccount(SqlRowSet result) {
 		Account accountToMap = new Account();
@@ -62,7 +72,5 @@ public class AccountSqlDAO implements AccountDAO {
 		
 		return accountToMap;
 	}
-	
-	
 	
 }

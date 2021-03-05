@@ -1,6 +1,6 @@
-package com.techelevator.tenmo.model;
+package com.techelevator.tenmo.models;
 
-import javax.validation.constraints.NotNull;
+import java.text.DecimalFormat;
 
 public class Transfer {
 	private long transferId;
@@ -10,9 +10,15 @@ public class Transfer {
 	private String transferStatus;
 	private long accountFrom;
 	private long accountTo;
-	@NotNull
 	private double amount;
-	
+	private DecimalFormat formatter = new DecimalFormat("0.00");
+	@Override
+	public String toString() {
+		return "Transfer id to: " + accountTo + "\n"
+				+ "Amount: $" + formatter.format(amount) + "\n"
+				+ "Status: " + transferStatus + "\n"
+				+ "Type: " + transferType;
+	}
 	public long getTransferId() {
 		return transferId;
 	}
@@ -61,6 +67,4 @@ public class Transfer {
 	public void setAmount(double amount) {
 		this.amount = amount;
 	}
-
-	
 }

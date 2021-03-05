@@ -21,4 +21,13 @@ public interface AccountDAO {
 	 * Returns a list of Accounts
 	 */
 	public List<Account> getAccountsToTransfer(long userId);
+	
+	/*
+	 * Updates both accounts for a transfer
+	 * 
+	 * Takes 2 Accounts: accountFrom and accountTo
+	 * 				double: amount
+	 * Returns nothing
+	 */
+	public void transferMoney(Account accountFrom, Account accountTo, double amount);
 }
